@@ -85,7 +85,7 @@ const popIn = (frame: number, start: number, dur = 16) =>
   interpolate(frame, [start, start + dur], [0, 1], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
-    easing: Easing.spring({ damping: 11 }),
+    easing: Easing.spring({ damping: 200 }),
     output: "perceptual-scale",
   });
 
@@ -131,14 +131,6 @@ const Kicker: React.FC<{ children: React.ReactNode; color?: string }> = ({
 
 const HookScene: React.FC = () => {
   const frame = useCurrentFrame();
-  const shake =
-    frame > 60
-      ? Math.sin(frame * 2.2) *
-        interpolate(frame, [60, 72], [6, 0], {
-          extrapolateLeft: "clamp",
-          extrapolateRight: "clamp",
-        })
-      : 0;
 
   return (
     <AbsoluteFill
@@ -163,7 +155,6 @@ const HookScene: React.FC = () => {
         style={{
           scale: popIn(frame, 10, 18),
           opacity: fadeIn(frame, 10, 10),
-          translate: `${shake}px 0px`,
           fontFamily: headlineFont,
           fontWeight: 800,
           fontSize: 104,
@@ -202,8 +193,8 @@ const ProblemScene: React.FC = () => {
       }}
     >
       {PROBLEM_LINES.map((line, i) => {
-        const start = i * 30;
-        const opacity = fadeInOut(frame, start + 2, start + 24, 8);
+        const start = i * 45;
+        const opacity = fadeInOut(frame, start + 3, start + 32, 10);
         const slide = interpolate(frame, [start, start + 10], [40, 0], {
           extrapolateLeft: "clamp",
           extrapolateRight: "clamp",
@@ -617,19 +608,19 @@ export const ConversionReel: React.FC = () => {
       <Sequence from={0} durationInFrames={90} layout="absolute-fill">
         <HookScene />
       </Sequence>
-      <Sequence from={90} durationInFrames={90} layout="absolute-fill">
+      <Sequence from={90} durationInFrames={135} layout="absolute-fill">
         <ProblemScene />
       </Sequence>
-      <Sequence from={180} durationInFrames={120} layout="absolute-fill">
+      <Sequence from={225} durationInFrames={120} layout="absolute-fill">
         <RevealScene />
       </Sequence>
-      <Sequence from={300} durationInFrames={240} layout="absolute-fill">
+      <Sequence from={345} durationInFrames={240} layout="absolute-fill">
         <MontageScene />
       </Sequence>
-      <Sequence from={540} durationInFrames={90} layout="absolute-fill">
+      <Sequence from={585} durationInFrames={90} layout="absolute-fill">
         <UrgencyScene />
       </Sequence>
-      <Sequence from={630} durationInFrames={120} layout="absolute-fill">
+      <Sequence from={675} durationInFrames={120} layout="absolute-fill">
         <CtaScene />
       </Sequence>
       <SnowLayer />
@@ -637,4 +628,4 @@ export const ConversionReel: React.FC = () => {
   );
 };
 
-export const CONVERSION_REEL_DURATION = 750;
+export const CONVERSION_REEL_DURATION = 795;
