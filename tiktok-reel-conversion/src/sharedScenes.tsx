@@ -113,12 +113,21 @@ export const TextBeats: React.FC<{
   return (
     <AbsoluteFill style={{ background }}>
       {positioned.map((b, i) => {
-        const opacity = fadeInOut(frame, b.start + 3, b.start + b.dur - 14, 10);
-        const slide = interpolate(frame, [b.start, b.start + 10], [40, 0], {
-          extrapolateLeft: "clamp",
-          extrapolateRight: "clamp",
-          easing: Easing.bezier(0.16, 1, 0.3, 1),
-        });
+        const isFirst = i === 0;
+        // First beat skips the fade/slide-in: frame 0 must already show full text, not a near-blank screen.
+        const opacity = isFirst
+          ? interpolate(frame, [0, b.start + b.dur - 14, b.start + b.dur - 4], [1, 1, 0], {
+              extrapolateLeft: "clamp",
+              extrapolateRight: "clamp",
+            })
+          : fadeInOut(frame, b.start + 3, b.start + b.dur - 14, 10);
+        const slide = isFirst
+          ? 0
+          : interpolate(frame, [b.start, b.start + 10], [40, 0], {
+              extrapolateLeft: "clamp",
+              extrapolateRight: "clamp",
+              easing: Easing.bezier(0.16, 1, 0.3, 1),
+            });
         return (
           <div
             key={i}
