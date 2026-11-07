@@ -362,28 +362,33 @@ export const CardReel: React.FC<{
           durationInFrames={frameEach}
           layout="absolute-fill"
         >
-          <ReelCard item={item} frameEach={frameEach} />
+          <ReelCard item={item} frameEach={frameEach} isFirst={i === 0} />
         </Sequence>
       ))}
     </AbsoluteFill>
   );
 };
 
-const ReelCard: React.FC<{ item: CardItem; frameEach: number }> = ({
-  item,
-  frameEach,
-}) => {
+const ReelCard: React.FC<{
+  item: CardItem;
+  frameEach: number;
+  isFirst?: boolean;
+}> = ({ item, frameEach, isFirst }) => {
   const frame = useCurrentFrame();
   const scale = interpolate(frame, [0, frameEach], [1, 1.07], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
-  const opacity = interpolate(
-    frame,
-    [0, 3, frameEach - 4, frameEach],
-    [0, 1, 1, 0],
-    { extrapolateLeft: "clamp", extrapolateRight: "clamp" },
-  );
+  // First card skips the fade-in: frame 0 must already show the full card, not a near-blank screen.
+  const opacity = isFirst
+    ? interpolate(frame, [0, frameEach - 4, frameEach], [1, 1, 0], {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp",
+      })
+    : interpolate(frame, [0, 3, frameEach - 4, frameEach], [0, 1, 1, 0], {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp",
+      });
 
   return (
     <AbsoluteFill
